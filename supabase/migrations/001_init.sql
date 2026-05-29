@@ -1,4 +1,4 @@
-CREATE TABLE items (
+CREATE TABLE IF NOT EXISTS items (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   name text NOT NULL,
   description text,
@@ -6,7 +6,7 @@ CREATE TABLE items (
   created_at timestamptz NOT NULL DEFAULT now()
 );
 
-CREATE TABLE payments (
+CREATE TABLE IF NOT EXISTS payments (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   item_id uuid REFERENCES items(id),
   amount integer NOT NULL,
