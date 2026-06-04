@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { supabase } from './lib/supabase';
 
 export default function App() {
   const [greeting, setGreeting] = useState<string | null>(null);
@@ -9,20 +8,28 @@ export default function App() {
   var envVar: string = ""
 
   async function handleGreet() {
-    const { data, error } = await supabase.functions.invoke('hello-world');
-    if (error) {
-      setGreeting(`Error: ${error.message}`);
+    const response = await fetch('/api/hello-world', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({}),
+    });
+    const data = await response.json();
+    if (!response.ok) {
+      setGreeting(`Error: ${data?.message ?? response.statusText}`);
     } else {
       setGreeting(data?.message ?? 'No message');
     }
   }
 
   async function handlePayment() {
-    const { data, error } = await supabase.functions.invoke('process-payment', {
-      body: { amount: 1000, currency: 'usd' },
+    const response = await fetch('/api/process-payment', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ amount: 1000, currency: 'usd' }),
     });
-    if (error) {
-      setPaymentStatus(`Error: ${error.message}`);
+    const data = await response.json();
+    if (!response.ok) {
+      setPaymentStatus(`Error: ${data?.message ?? response.statusText}`);
     } else {
       setPaymentStatus(data?.status ?? 'unknown');
     }
